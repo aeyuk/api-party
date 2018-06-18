@@ -1,15 +1,38 @@
 import React, { Component } from 'react'
 
 class GithubUser extends Component {
-  render() {
-    const { params } = this.props.match
+    constructor(props) {
+        super(props)
 
-    return (
-      <div className="GithubUser">
-        <h1>GitHub user: {params.username}</h1>
-      </div>
-    )
-  }
+        this.state = {
+            user: {}
+        }
+
+        this.fetchUserData()
+    }
+
+    fetchUserData = () => {
+        const { params } = this.props.match
+        fetch(`https://api.github.com/users/${params.username}`)
+          .then(response => response.json())
+          .then(user => this.setState({ user }))
+    }
+
+    render() {
+        const { user } = this.state
+    
+        return (
+          <div className="GithubUser">
+            <img src={user.avatar_url} alt="" />
+            <h2>
+              <a href={user.html_url} target="_blank">
+                {user.name} ({user.login})
+              </a>
+            </h2>
+            <h3>{user.location}</h3>
+          </div>
+        )
+      }
 }
 
 export default GithubUser
